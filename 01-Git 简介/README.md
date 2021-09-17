@@ -221,12 +221,14 @@ Git 的默认编辑器，建议使用默认的 Vim 编辑器，然后点击下�
 
 1）基本语法
 
-```shell
+```bash
 git config --global user.name 用户名
 git config --global user.email 邮箱
 ```
 
-2）案例实操全局范围的签名设置：
+2）案例实操
+
+全局范围的签名设置
 
 ![image-20210917001235229](https://i.loli.net/2021/09/17/62JueaM9ByrmHdX.png)
 
@@ -238,3 +240,284 @@ git config --global user.email 邮箱
 
 :bangbang: 注意：这里设置用户签名和将来登录 GitHub（或其他代码托管中心）的账号没有任何关系
 
+### 3.2、初始化本地库
+
+1）基本语法
+
+```bash
+git init
+```
+
+2）案例实操
+
+![image-20210917203400924](https://i.loli.net/2021/09/17/QBPNgHCUzGOiJuy.png)
+
+### 3.3、查看本地库状态
+
+1）基本语法
+
+```bash
+git status
+```
+
+2）案例实操
+
+![git status](https://i.loli.net/2021/09/17/b645MnGSFxRyhaQ.gif)
+
+新增文件前
+
+![image-20210917204804510](https://i.loli.net/2021/09/17/4xCVHGPLgjXbB1F.png)
+
+新增文件后
+
+![image-20210917204858689](https://i.loli.net/2021/09/17/IqK6GEc92hYx7HF.png)
+
+###  3.4、添加暂存区
+
+1）基本语法
+
+```bash
+git add 文件名
+```
+
+2）案例实操
+
+红色表示仍在工作区，修改尚未被追踪；绿色表示已添加至暂存区，修改被追踪
+
+![image-20210917205319556](https://i.loli.net/2021/09/17/DnfmIo3KZlt5zJ4.png)
+
+使用命令，删除暂存区该文件（只是删除暂存区，不影响工作区）
+
+```bash
+git rm --cached hello.txt
+```
+
+![image-20210917205546165](https://i.loli.net/2021/09/17/uJS8Gp3CazAKU7l.png)
+
+### 3.5、提交至本地库
+
+1）基本语法
+
+```bash
+# -m 表示添加一个版本日志信息，不写此参数也会打开日志信息的文件框。一般带参数
+git commit -m "日志信息" 文件名
+```
+
+2）案例实操
+
+正常操作
+
+![image-20210917210542226](https://i.loli.net/2021/09/17/KNfMvCTkE3YQxdj.png)
+
+无`-m`参数时
+
+![image-20210917210109185](https://i.loli.net/2021/09/17/bvTfga13wtuSUhq.png)
+
+如果强制退出
+
+![image-20210917210156460](https://i.loli.net/2021/09/17/XIx7L3lTW9FcBtP.png)
+
+### 3.6、修改文件
+
+案例实操
+
+![image-20210917211143162](https://i.loli.net/2021/09/17/o2p7dO4F9A5VDjJ.png)
+
+git 里是按照行维护文件的，所以修改内容其实就是之前的行删除，修改过后的行添加进来
+
+因此在`commit`之后提示信息`1 insertion(+), 1 deletion(-)`
+
+### 3.7、历史版本
+
+#### 查看历史版本
+
+1）基本语法
+
+```bash
+# 查看精简版本信息
+git reflog
+# 查看详细版本信息
+git log
+```
+
+2）案例实操
+
+![image-20210917211945690](https://i.loli.net/2021/09/17/p2mvTbZuEqVkYB9.png)
+
+#### 版本穿梭
+
+1）基本语法
+
+```bash
+git reset --hard 版本号
+```
+
+2）案例实操
+
+![image-20210917212348218](https://i.loli.net/2021/09/17/nBw6OEL9liyMe7d.png)
+
+文件验证当前版本号
+
+![image-20210917212941200](https://i.loli.net/2021/09/17/vMYXFVyWo6PNOzf.png)
+
+Git 切换版本，底层其实是移动的 HEAD 指针，具体原理如下图所示
+
+![image-20210917213424162](https://i.loli.net/2021/09/17/5GQRnhD8XijVZuy.png)
+
+![image-20210917213247141](https://i.loli.net/2021/09/17/CVdReJPu5YMTmHQ.png)
+
+![image-20210917213333350](https://i.loli.net/2021/09/17/oU5ORWqvghNCcTi.png)
+
+
+
+## 4、Git 分支操作
+
+---
+
+![image-20210917213616760](https://i.loli.net/2021/09/17/6jGfxUmrERZSV9h.png)
+
+### 4.1、什么是分支
+
+在版本控制过程中，同时推进多个任务，为每个任务，我们就可以创建每个任务的单独分支。使用分支意味着程序员可以把自己的工作从开发主线上分离开来，开发自己分支的时候，不会影响主线分支的运行。对于初学者而言，分支可以简单理解为副本，一个分支就是一个单独的副本（分支底层其实也是指针的引用）
+
+![image-20210917213935209](https://i.loli.net/2021/09/17/AVwpC1ZLzmOlEUg.png)
+
+### 4.2、分支的好处
+
+同时并行推进多个功能开发，**提高开发效率**
+
+各个分支在开发过程中，如果某一个分支开发失败，**不会对其他分支有任何影响**。失败的分支删除重新开始即可
+
+### 4.3、分支的操作
+
+| 命令                  | 作用                       |
+| :-------------------- | :------------------------- |
+| `git branch 分支名`   | 创建分支                   |
+| `git branch -v`       | 查看分支                   |
+| `git checkout` 分支名 | 切换分支                   |
+| `git merge` 分支名    | 把指定的分支合并到当前分支 |
+
+#### 创建分支、查看分支
+
+1）基本语法
+
+```bash
+git branch 分支名
+git branch -v
+```
+
+2）案例实操
+
+![image-20210917214653546](https://i.loli.net/2021/09/17/PVOR9ZjmIqkr4cv.png)
+
+#### 切换分支
+
+1）基本语法
+
+```bash
+git checkout 分支名
+```
+
+2）案例实操
+
+![image-20210917215246415](https://i.loli.net/2021/09/17/AR9NuTBG2UweEnb.png)
+
+#### 合并分支
+
+1）基本语法
+
+```bash
+git merge 分支名
+```
+
+2）案例实操
+
+**正常合并**
+
+![image-20210917215908842](https://i.loli.net/2021/09/17/UcwRJu78Kmvod4k.png)
+
+**冲突合并**
+
+冲突产生的原因：合并分支时，两个分支在同一个文件的同一个位置有两套完全不同的修改。Git无法替我们决定使用哪一个。必须人为决定新代码内容
+
+![image-20210917220923478](https://i.loli.net/2021/09/17/gcnCSJKtNqrokIQ.png)
+
+解决冲突
+
+![image-20210917221121233](https://i.loli.net/2021/09/17/mU3Y9JodyTpV7nB.png)
+
+![image-20210917221239011](https://i.loli.net/2021/09/17/S6OrkKeFsCymWcB.png)
+
+![image-20210917222018377](https://i.loli.net/2021/09/17/iMQfWOwkSH8ujh2.png)
+
+#### 创建分支和切换分支图解
+
+![image-20210917221451896](https://i.loli.net/2021/09/17/6WNlEc9FbaJmhkv.png)
+
+![image-20210917221515718](https://i.loli.net/2021/09/17/OKwIG2BvZC7mVjl.png)
+
+master、hot-fix 其实都是指向具体版本记录的指针。当前所在的分支，其实是由 HEAD 决定的。所以创建分支的本质就是多创建一个指针
+
+- HEAD 如果指向 master，那么我们现在就在 master 分支上
+- HEAD 如果指向 hotfix，那么我们现在就在 hotfix 分支上
+
+所以切换分支的本质就是移动HEAD指针
+
+
+
+## 5、Git 团队协作机制
+
+---
+
+### 5.1、团队内协作
+
+![image-20210917222216595](https://i.loli.net/2021/09/17/HWlevFmCKdRju6V.png)
+
+### 5.2、跨团队协作
+
+ ![image-20210917222441407](https://i.loli.net/2021/09/17/gvmsB4Rn7xYfc9A.png)
+
+
+
+## 6、Git 操作
+
+---
+
+- Git 官网：[https://github.com/](https://github.com/)
+
+Ps：全球最大同性交友网站，技术宅男的天堂，新世界的大门，你还在等什么？
+
+| 账号                 | 姓名       | 验证邮箱                     |
+| :------------------- | :--------- | :--------------------------- |
+| `atguiguyuebuqun`    | `岳不群`   | `atguiguyuebuqun@aliyun.com` |
+| `atguigulinghuchong` | `令狐冲`   | `atguigulinghuchong@163.com` |
+| `atguigudongfang1`   | `东方不败` | `atguigudongfang1@163.com`   |
+
+### 6.1、创建远程仓库
+
+![image-20210917223235275](https://i.loli.net/2021/09/17/iP9EZnU81O3wGYB.png)
+
+![](https://i.loli.net/2021/09/17/gLQzrsRiN2Cj6Fe.png)
+
+### 6.2、远程仓库操作
+
+| 命令                               | 作用                                                     |
+| :--------------------------------- | :------------------------------------------------------- |
+| `git remote add 别名 远程地址`     | 起别名                                                   |
+| `git remote -v`                    | 查看当前所有远程别名                                     |
+| `git clone 远程地址`               | 将远程仓库的内容克隆到本地                               |
+| `git pull 远程地址别名 远程分支名` | 将远程仓库对于分支最新内容拉下来后与当前本地分支直接合并 |
+| `git push 别名 分支`               | 推送本地分支上的内容到远程仓库                           |
+
+#### 创建远程仓库别名
+
+1）基本语法
+
+```bash
+git remote -v
+git remote add 别名 远程地址
+```
+
+2）案例实操
+
+![image-20210917225451875](https://i.loli.net/2021/09/17/PfZBknlC8RjHvxV.png)
