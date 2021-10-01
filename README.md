@@ -48,13 +48,15 @@
 
 ```bash
 git --version  					      #Git版本
-git config --system user.name 用户名    #设置用户签名（全局）
-git config --system user.email 邮箱     #设置用户签名（全局） 
-git config --global user.name 用户名    #设置用户签名（用户）
-git config --global user.email 邮箱     #设置用户签名（用户）
-git config user.name 用户名             #设置用户签名（项目）
-git config user.email 邮箱              #设置用户签名（项目）
+git config --system [--unset] user.name 用户名    #设置/删除用户签名（全局）
+git config --system [--unset] user.email 邮箱     #设置/删除用户签名（全局） 
+git config --global [--unset] user.name 用户名    #设置/删除用户签名（用户）
+git config --global [--unset] user.email 邮箱     #设置/删除用户签名（用户）
+git config [--unset] user.name 用户名             #设置/删除用户签名（项目）
+git config [--unset] user.email 邮箱              #设置/删除用户签名（项目）
+git config --system alias.别名 命令参数  #设置命令别名
 git config --global alias.别名 命令参数  #设置命令别名
+git config alias.别名 命令参数           #设置命令别名
 git config --list                       #查看所有配置
 git init                                #初始化本地库
 ```
@@ -75,6 +77,7 @@ git add 文件名                    #添加至暂存区
 git commit [文件名]               #提交至本地库
 git commit -m "日志信息" [文件名]
 git commit -a
+git commit -a -m "日志信息"
 git reset --soft commithash      #HEAD
 git reset [--mixed] commithash   #HEAD、暂存区
 git reset --hard commithash      #HEAD、暂存区、工作区（版本穿梭）
@@ -83,7 +86,8 @@ git reset --hard commithash      #HEAD、暂存区、工作区（版本穿梭）
 ### 4、Git 历史记录
 
 ```bash
-git reflog                                 #HEAD日志
+git reflog                                 #引用日志
+git log -g                                 #引用日志（详细）
 git log                                    #详细日志
 git log --pretty=oneline                   #一行化
 git log --oneline                          #一行化并精简hash
@@ -101,7 +105,18 @@ git merge 分支名                #合并分支
 git branch -D/-d name          #(强制)删除分支
 ```
 
-### 6、Git 远程操作
+### 6、Git 撤回与重置
+
+```bash
+git checkout -- file           #撤回修改
+git reset [--mixed HEAD] file  #撤回暂存
+git commit --amend             #撤回提交
+git reset --soft commithash     #重置HEAD
+git reset [--mixed] commithash  #重置HEAD、暂存区
+git reset --hard commithash     #重置HEAD、暂存区、工作区
+```
+
+### 7、Git 远程操作
 
 ```bash
 git remote add 别名 远程地址  #定义别名
@@ -111,7 +126,7 @@ git pull 别名 分支名          #拉取分支
 git push 别名 分支名          #推送分支
 ```
 
-### 7、其他命令
+### 8、其他命令
 
 ```bash
 git rm 文件名               #移除文件并暂存
