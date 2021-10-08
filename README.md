@@ -119,11 +119,15 @@ git reset --hard commithash     #重置HEAD、暂存区、工作区
 ### 7、Git 远程操作
 
 ```bash
-git remote add 别名 远程地址  #定义别名
-git remote -v                #查看所有别名
-git clone 远程地址            #克隆仓库
-git pull 别名 分支名          #拉取分支
-git push 别名 分支名          #推送分支
+git remote add 别名 远程地址             #定义别名
+git remote -v                           #查看所有别名
+git clone 远程地址                       #克隆仓库
+git pull 别名 分支名                     #拉取分支
+git push 别名 分支名                     #推送分支
+git branch -vv                          #查看所有远程跟踪分支
+git branch -u 远程跟踪分支名              #本地分支跟踪远程分支
+git checkout -b 本地分支名 远程跟踪分支名  #创建本地分支并跟踪远程分支
+git checkout --track 远程跟踪分支名       #创建本地分支并跟踪远程分支
 ```
 
 ### 8、其他命令

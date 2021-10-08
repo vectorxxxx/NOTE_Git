@@ -1484,3 +1484,153 @@ git fetch [remote-name]
 查看必须注意`git fetch`命令会将数据拉取到你的本地仓库  -  它并不会自动合并或修改你当前的工作。当准备好时你必须手动将其合并
 入你的工作
 
+```bash
+git merge [remote-name]
+```
+
+### 13.2、深入理解远程库
+
+#### 13.2.1、远程跟踪分支
+
+**远程跟踪分支**是远程分支状态的引用。它们是你不能移动的本地分支。当你做任何网络通信操作时，它们会自动移动
+
+它们以 (remote)/(branch) 形式命名，例如，如果你想要看你最后一次与远程仓库 origin 通信时 master 分支的状态，你可以查看 origin/master 分支
+
+当克隆一个仓库时，它通常会自动地创建一个跟踪 origin/master 的 master 分支 
+
+假设你的网络里有一个在 git.ourcompany.com 的 Git 服务器。如果你从这里克隆，Git 的`clone`命令会为你自动将其命名为 origin，拉取它的所有数据，创建一个指向它的 master 分支的指针，并且在本地将其命名为 origin/master。Git 也会给你一个与 origin/master 分支在指向同一个地方的本地 master 分支，这样你就有工作的基础
+
+![image-20211008201059936](https://i.loli.net/2021/10/08/pnXhWDcljRCBYV2.png)
+
+如果你在本地的 master 分支做了一些工作，然而在同一时间，其他人推送提交到 git.ourcompany.com 并更新了它的 master 分支，那么你们的提交历史将向不同的方向前进。只要你不与 origin 服务器连接，你的 origin/master 指针就不会移动
+
+![image-20211008201306509](https://i.loli.net/2021/10/08/xyl3AOYNaWbuGSp.png)
+
+如果要同步你的工作，运行`git fetch origin`命令。这个命令查找 “origin” 是哪一个服务器（在本例中，它是 git.ourcompany.com），从中抓取本地没有的数据，并且更新本地数据库，移动 origin/master 指针指向新的、更新后的位置
+
+#### 13.2.2、推送其他分支
+
+当你想要公开分享一个分支时，需要将其推送到有写入权限的远程仓库上。本地的分支并不会自动与远程仓库同步  -  你必须显式地推送想要分享的分支。这样，你就可以把不愿意分享的内容放到私人分支上，而将需要和别人协作的内容推送到公开分支
+
+如果希望和别人一起在名为 serverfix 的分支上工作，你可以像推送第一个分支那样推送它
+
+```bash
+git push origin serverfix
+```
+
+这里有些工作被简化了。Git 自动将 serverfix 分支名字展开为 refs/heads/serverfix:refs/heads/serverfix
+
+你也可以运行`git push origin serverfix:serverfix`，它会做同样的事  -  相当于它说，“推送本地的 serverfix 分支，将其作为远程仓库的 serverfix 分支
+
+```bash
+git push origin serverfix:awesomebranch
+```
+
+如果并不想让远程仓库上的分支叫做 serverfix，可以运行以上命令将本地的 serverfix 分支推送到远程仓库上的 awesomebranch 分支
+
+```bash
+git fetch origin
+```
+
+下一次其他协作者从服务器上抓取数据时，他们会在本地生成一个远程跟踪分支 origin/serverfix， 指向服务器的 serverfix 分支的引用
+
+要特别注意的一点是当抓取到新的远程跟踪分支时，本地不会自动生成一份可编辑的副本（拷贝）。换一句话说，这种情况下，不会有一个新的 serverfix 分支  -  只有一个不可以修改的 origin/serverfix 指针
+
+```bash
+git merge origin/serverfix 
+```
+
+可以运行`git merge origin/serverfix`将这些工作合并到当前所在的分支。如果想要在自己的 serverfix 分支上工作，可以将其建立在远程跟踪分支之上
+
+```bash
+git checkout -b serverfix origin/serverfix  #（其他协作者） 
+```
+
+#### 13.2.3、跟踪分支
+
+从一个远程跟踪分支（origin/master）检出一个本地分支会自动创建一个叫做  “跟踪分支”（有时候也叫做 “上游分支” ：master）。**只有主分支并且克隆时才会自动建跟踪分支**
+
+跟踪分支是与远程分支有直接关系的本地分支。如果在一个跟踪分支上输入`git pull`，Git  能自动地识别去哪个服务器上抓取、合并到哪个分支。 如果你愿意的话可以设置其他的跟踪分支，或者不跟踪 master 分支
+
+```bash
+git checkout -b [branch] [remotename]/[branch] 
+git checkout -b serverfix origin/serverfix
+```
+
+这是一个十分常用的操作，所以 Git 提供了`--track`快捷方式
+
+```bash
+git checkout --track origin/serverfix
+```
+
+如果想要将本地分支与远程分支设置为不同名字
+
+```bash
+git checkout -b sf origin/serverfix
+```
+
+设置已有的本地分支跟踪一个刚刚拉取下来的远程分支，或者想要修改正在跟踪的跟踪分支，你可以在任意时间使用`-u`选项运行`git 
+branch`来显式地设置
+
+```bash
+git branch -u origin/serverfix  #（ --set-upstream-to） 
+```
+
+查看设置的所有跟踪分支
+
+```bash
+git branch -vv
+```
+
+iss53 分支正在跟踪 origin/iss53 并且 “ahead” 是 2，意味着本地有两个提交还没有推送到服务器上。 master 分支正在跟踪 origin/master 分支并且是最新的。serverfix 分支正在跟踪  teamone 服务器上的 server-fix-good 分支并且领先 3 落后 1，意味着服务器上有一次提交还没有合并入同时本地有三次提交还没有推送。testing 分支并没有跟踪任何远程分支
+
+需要重点注意的一点是这些数字的值来自于你从每个服务器上最后一次抓取的数据。这个命令并没有连接服务器，它只会告诉你关于本地缓存的服务器数据。如果想要统计最新的领先与落后数字，需要在运行此命令前抓取所有的远程仓库。可以像这样做
+
+```bash
+git fetch --all
+git branch –vv
+```
+
+#### 13.2.4、删除远程分支
+
+```bash
+git push origin --delete serverfix  #删除远程分支
+git remote prune origin --dry-run  #列出仍在远程跟踪但是远程已被删除的无用分支
+git remote prune origin  #清除上面命令列出来的远程跟踪
+```
+
+#### 13.2.5、pull request 流程
+
+如果你想要参与某个项目，但是并没有推送权限，这时可以对这个项目进行“派生”（Fork）。  派生的意思是指，GitHub 将在你的空间中创建一个完全属于你的项目副本，且你对其具有推送权限。通过这种方式，项目的管理者不再需要忙着把用户添加到贡献者列表并给予他们推送权限。人们可以派生这个项目，将修改推送到派生出的项目副本中，并通过创建合并请求（Pull Request）来让他们的改动进入源版本库
+
+基本流程：
+
+1. 从 master 分支中创建一个新分支（自己 fork 的项目） 
+
+2. 提交一些修改来改进项目（自己 fork 的项目） 
+
+3. 将这个分支推送到 GitHub 上（自己 fork 的项目） 
+
+4. 创建一个合并请求
+
+5. 讨论，根据实际情况继续修改
+
+6. 项目的拥有者合并或关闭你的合并请求
+
+注意点：每次在发起新的 Pull Request 时，要去拉取最新的源仓库的代码，而不是自己 fork 的那个仓库。
+
+#### 13.2.6、SSH
+
+```bash
+ssh-keygen –t rsa –C 你的邮箱  #生成公私钥
+ssh -T git@github.com  #测试公私钥是否已经配对 
+```
+
+.ssh 文件位置：C:\Users\Administrator\.ssh
+
+### 13.3、总结
+
+- 克隆时，会自动生成一个 master 分支和对应的远程跟踪分支 origin/master
+- 新建其他分支，可以指定跟踪远程分支`git checkout --track 远程跟踪分支`
+- 已有分支尚未跟踪远程分支时，通过`git branch -u 远程跟踪分支`来跟踪远程分支
+
