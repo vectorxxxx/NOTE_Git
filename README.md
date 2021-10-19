@@ -48,16 +48,29 @@
 
 ```bash
 git --version  					      #Git版本
+git update-git-for-windows		       #升级版本
 git config --system [--unset] user.name 用户名    #设置/删除用户签名（全局）
 git config --system [--unset] user.email 邮箱     #设置/删除用户签名（全局） 
 git config --global [--unset] user.name 用户名    #设置/删除用户签名（用户）
 git config --global [--unset] user.email 邮箱     #设置/删除用户签名（用户）
 git config [--unset] user.name 用户名             #设置/删除用户签名（项目）
-git config [--unset] user.email 邮箱              #设置/删除用户签名（项目）
-git config --system alias.别名 命令参数  #设置命令别名
-git config --global alias.别名 命令参数  #设置命令别名
-git config alias.别名 命令参数           #设置命令别名
-git config --list                       #查看所有配置
+git config [--unset] user.email 邮箱              #设置/删除用户签名（项目）   
+git config --unset credential.helper              #重置凭证
+git config --system gui.encoding utf-8             #编码设置（全局）
+git config --system i18n.commitEncoding utf-8      #编码设置（全局）
+git config --system i18n.logoutputencoding utf-8   #编码设置（全局）
+git config --global gui.encoding utf-8             #编码设置（用户）
+git config --global i18n.commitEncoding utf-8      #编码设置（用户）
+git config --global i18n.logoutputencoding utf-8   #编码设置（用户）
+git config gui.encoding utf-8                      #编码设置（项目）
+git config i18n.commitEncoding utf-8               #编码设置（项目）
+git config i18n.logoutputencoding utf-8            #编码设置（项目）
+git config --system alias.别名 命令参数  #设置命令别名（全局）
+git config --global alias.别名 命令参数  #设置命令别名（用户）
+git config alias.别名 命令参数           #设置命令别名（项目） 
+git config --system --list              #查看所有配置（全局）
+git config --global --list              #查看所有配置（用户）
+git config --list                       #查看所有配置（项目）
 git init                                #初始化本地库
 ```
 
@@ -120,6 +133,7 @@ git reset --hard commithash     #重置HEAD、暂存区、工作区
 
 ```bash
 git remote add 别名 远程地址             #定义别名
+git remote set-url --add 别名 远程地址   #同一别名添加多个远程地址
 git remote -v                           #查看所有别名
 git clone 远程地址                       #克隆仓库
 git pull 别名 分支名                     #拉取分支
@@ -140,7 +154,8 @@ git stash list             #查看存储
 git stash apply stash@{2}  #如果不指定一个储藏，Git认为指定的是最近的储藏
 git stash drop             #加上将要移除的储藏的名字来移除它
 git stash pop              #来应用储藏然后立即从栈上扔掉它
-ssh-keygen -t rsa -C 描述  #SSH免密登录生成密钥
+ssh-keygen -t rsa [-C 描述]   #SSH免密登录生成密钥
+ssh -T git@github.com         #测试配置是否成功
 ```
 
 
